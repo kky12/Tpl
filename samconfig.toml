@@ -3,9 +3,9 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "Topfan-Lite-Dev"
-s3_bucket = "topfan-lite-dev-pipeline"
-s3_prefix = "topfan-lite-dev"
+stack_name = "topfan-lite-dev"
+s3_bucket = "dev-pipeline-topfan-lite"
+s3_prefix = "dev-pipeline-topfan-lite"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = false
