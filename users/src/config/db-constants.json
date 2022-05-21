@@ -1,0 +1,9 @@
+{
+    "user_table": "TopFansDb",
+    "Gender": [
+        "male",
+        "female",
+        "other"
+    ],
+    "USER": "USER"
+}
