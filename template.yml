@@ -6,7 +6,7 @@ Parameters:
   Subnets:
     Description: Subnet Id where instance will create 
     Type: List<AWS::EC2::Subnet::Id>
-    Default: subnet-e7abe2c9
+    Default: subnet-e7abe2c9,subnet-2ff7e565
     
   VpcId:
     Description: VPC id 
