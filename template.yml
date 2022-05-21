@@ -172,19 +172,19 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
-  usersFunctionInvokePermission:
+  usersInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt users.Arn
       Action: 'lambda:InvokeFunction'
       Principal: elasticloadbalancing.amazonaws.com
-  feedsFunctionInvokePermission:
+  feedsInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt feeds.Arn
       Action: 'lambda:InvokeFunction'
       Principal: elasticloadbalancing.amazonaws.com
-  categoryFunctionInvokePermission:
+  categoryInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt category.Arn
