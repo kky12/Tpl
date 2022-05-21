@@ -1,7 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
-Description: HelloWorld Lambda function template for Application Load Balancer Lambda as target
-
+Description: >-
 Parameters:
   Subnets:
     Description: Subnet Id where instance will create 
@@ -11,28 +10,117 @@ Parameters:
   VpcId:
     Description: VPC id 
     Type: AWS::EC2::VPC::Id
-    Default: vpc-77e6780d
-      
+    Default: vpc-77e6780d"
 
 Resources:
-  HelloWorldFunction:
+  feeds:
     Type: AWS::Serverless::Function
     Properties:
-      Description: An Application Load Balancer Lambda Target that returns "HelloWorld"
-      Handler: index.handler
-      Runtime: python3.7
-      InlineCode: |
-        def handler(event, context): 
-          return {
-            "statusCode": 200,
-            "statusDescription": "HTTP OK",
-            "isBase64Encoded": False,
-            "headers": {
-              "Content-Type": "text/html"
-            },
-            "body": "<h1>Hello from Lambda!</h1>"
-          }
-      Timeout: 1
+      FunctionName: feeds
+      CodeUri: feeds/
+      Handler: src/handlers/feeds.handler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MyMarketItems
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          SAMPLE_TABLE: !Ref MyMarketItems
+  
+  users:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: users
+      CodeUri: users/
+      Handler: src/handlers/users.handler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Policies:
+        # Give Create/Read/Update/Delete Permissions to the SampleTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MyMarketItems
+      Environment:
+        Variables:
+          # Make table name accessible as environment variable from function code during execution
+          SAMPLE_TABLE: !Ref MyMarketItems
+  category:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: category
+      CodeUri: category/
+      Handler: src/handlers/categories.handler
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 100
+      Description: This function will handle the users categories
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Category
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref Category
+  TopFansDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TopFansDb
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+        - AttributeName: gsi1pk
+          AttributeType: S
+        - AttributeName: gsi1sk
+          AttributeType: S
+           
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      GlobalSecondaryIndexes: 
+        - IndexName: GSI1
+          KeySchema: 
+          - AttributeName: gsi1pk
+            KeyType: HASH
+          - AttributeName: gsi1sk
+            KeyType: RANGE
+          Projection: 
+            ProjectionType: ALL 
+          Projection: 
+            ProjectionType: ALL       
+      BillingMode: PAY_PER_REQUEST
+  Category:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Category
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+      ProvisionedThroughput:
+        ReadCapacityUnits: 0
+        WriteCapacityUnits: 
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -41,15 +129,30 @@ Resources:
       Subnets: !Ref Subnets      
       SecurityGroups:
       - !Ref LoadBalancerSecurityGroup
-
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    DependsOn: HelloWorldFunctionInvokePermission
+    DependsOn: feedsInvokePermission
     Properties:
+      TargetGroupNAME: feeds-tg
       TargetType: lambda
       Targets:
-      - Id: !GetAtt HelloWorldFunction.Arn
-
+      - Id: !GetAtt feeds.Arn
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: usersInvokePermission
+    Properties:
+      TargetGroupNAME: users-tg
+      TargetType: lambda
+      Targets:
+      - Id: !GetAtt users.Arn
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    DependsOn: categoryInvokePermission
+    Properties:
+      TargetGroupNAME: category-tg
+      TargetType: lambda
+      Targets:
+      - Id: !GetAtt category.Arn            
   HttpListener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
     Properties:
@@ -59,7 +162,6 @@ Resources:
       LoadBalancerArn: !Ref LoadBalancer
       Port: 80
       Protocol: HTTP
-
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -70,14 +172,24 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
-
-  HelloWorldFunctionInvokePermission:
+  usersFunctionInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: !GetAtt HelloWorldFunction.Arn
+      FunctionName: !GetAtt usersFunction.Arn
       Action: 'lambda:InvokeFunction'
       Principal: elasticloadbalancing.amazonaws.com
-
-Outputs:
-  LoadBalancerDNSNAme:
-    Value: !GetAtt LoadBalancer.DNSName
+  feedsFunctionInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt feedsFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: elasticloadbalancing.amazonaws.com
+  categoryFunctionInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt categoryFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: elasticloadbalancing.amazonaws.com      
+      #Outputs:
+      #LoadBalancerDNSNAme:
+      #Value: !GetAtt LoadBalancer.DNSName
