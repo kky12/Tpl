@@ -4,13 +4,13 @@ Description: >-
 Parameters:
   Subnets:
     Type: List<AWS::EC2::Subnet::ID>
-    Default: 
+    Default: 'subnet-6e753709'
        
         
     #Description : "subnet-e7abe2c9,subnet-2ff7e565"
   VpcId:
     Type: AWS::EC2::VPC::ID
-    Default: 
+    Default: 'vpc-77e6780d'
      # Description : "vpc-77e6780d"
 
 Resources:
