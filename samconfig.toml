@@ -3,11 +3,11 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 stack_name = "Topfan-Lite-Dev"
-s3_bucket = "topfan-lite-dev-pipeline"
-s3_prefix = "topfan-lite"
+s3_bucket = "dev-pipeline-topfan-lite"
+s3_prefix = "dev-pipeline-topfan-lite"
 region = "us-east-1"
 capabilities = "CAPABILITY_IAM"
 image_repositories = []
-parameter_overrides = "StageName=\"Prod\""
+#parameter_overrides = "StageName=\"Prod\""
 
 
