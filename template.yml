@@ -10,7 +10,7 @@ Parameters:
   VpcId:
     Description: VPC id 
     Type: AWS::EC2::VPC::Id
-    Default: vpc-77e6780d"
+    Default: vpc-77e6780d
 
 Resources:
   feeds:
