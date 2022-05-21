@@ -4,7 +4,7 @@ Description: HelloWorld Lambda function template for Application Load Balancer L
 
 Parameters:
   Subnets:
-    Type: List<subnet-e7abe2c9>
+    Type: subnet-e7abe2c9
   VpcId:
       Type: AWS::EC2::VPC::vpc-77e6780d
 
