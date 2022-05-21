@@ -14,7 +14,7 @@ Parameters:
      # Description : "vpc-77e6780d"
 
 Resources:
- feeds:
+  feeds:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: feeds
