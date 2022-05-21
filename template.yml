@@ -9,7 +9,7 @@ Parameters:
       Type: AWS::EC2::VPC::Id
 
 Resources:
-feeds:
+ feeds:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: feeds
@@ -30,7 +30,7 @@ feeds:
           # Make table name accessible as environment variable from function code during execution
           SAMPLE_TABLE: !Ref MyMarketItems
   
-users:
+ users:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: users
@@ -50,7 +50,7 @@ users:
         Variables:
           # Make table name accessible as environment variable from function code during execution
           SAMPLE_TABLE: !Ref MyMarketItems
-category:
+ category:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: category
@@ -68,7 +68,7 @@ category:
       Environment:
         Variables:
           SAMPLE_TABLE: !Ref Category
-TopFansDb:
+ TopFansDb:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: TopFansDb
@@ -99,7 +99,7 @@ TopFansDb:
           Projection: 
             ProjectionType: ALL       
       BillingMode: PAY_PER_REQUEST
-Category:
+ Category:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: Category
@@ -118,14 +118,14 @@ Category:
         ReadCapacityUnits: 0
         WriteCapacityUnits: 
 
-LoadBalancer:
+ LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Scheme: internet-facing 
       Subnets: !Ref Subnets      
       SecurityGroups:
       - !Ref LoadBalancerSecurityGroup
-TargetGroup:
+ TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: feedsInvokePermission
     Properties:
@@ -133,7 +133,7 @@ TargetGroup:
       TargetType: lambda
       Targets:
       - Id: !GetAtt feeds.Arn
-TargetGroup:
+ TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: usersInvokePermission
     Properties:
@@ -141,7 +141,7 @@ TargetGroup:
       TargetType: lambda
       Targets:
       - Id: !GetAtt users.Arn
-TargetGroup:
+ TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: categoryInvokePermission
     Properties:
@@ -149,7 +149,7 @@ TargetGroup:
       TargetType: lambda
       Targets:
       - Id: !GetAtt category.Arn            
-HttpListener:
+ HttpListener:
     Type: 'AWS::ElasticLoadBalancingV2::Listener'
     Properties:
       DefaultActions:
@@ -158,7 +158,7 @@ HttpListener:
       LoadBalancerArn: !Ref LoadBalancer
       Port: 80
       Protocol: HTTP
-LoadBalancerSecurityGroup:
+ LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow http to client host
@@ -168,19 +168,19 @@ LoadBalancerSecurityGroup:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
-usersFunctionInvokePermission:
+ usersFunctionInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt usersFunction.Arn
       Action: 'lambda:InvokeFunction'
       Principal: elasticloadbalancing.amazonaws.com
-feedsFunctionInvokePermission:
+ feedsFunctionInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt feedsFunction.Arn
       Action: 'lambda:InvokeFunction'
       Principal: elasticloadbalancing.amazonaws.com
-categoryFunctionInvokePermission:
+ categoryFunctionInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !GetAtt categoryFunction.Arn
