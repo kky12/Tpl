@@ -4,9 +4,11 @@ Description: >-
 
 Parameters:
   Subnets:
-    Type: e7abe2c9
+    Type: List<AWS::EC2::Subnet::Id>
+    Description" : "subnet-e7abe2c9,subnet-2ff7e565"
   VpcId:
-      Type: AWS::EC2::VPC::vpc-77e6780d
+      Type: AWS::EC2::VPC::vpc-ID
+      Description" : "vpc-77e6780d"
 
 Resources:
  feeds:
