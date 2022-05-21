@@ -3,8 +3,8 @@ Transform: AWS::Serverless-2016-10-31
 Description: HelloWorld Lambda function template for Application Load Balancer Lambda as target
 
 Parameters:
-  Subnets:
-    Type: subnet-e7abe2c9
+  #Subnets:
+   # Type: subnet-e7abe2c9
   VpcId:
       Type: AWS::EC2::VPC::vpc-77e6780d
 
