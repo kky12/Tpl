@@ -4,12 +4,14 @@ Description: >-
 
 Parameters:
   Subnets:
-    Type: List<"AWS::EC2::Subnet::subnet-e7abe2c9">
-   # Properties: "subnet-e7abe2c9,subnet-2ff7e565"
+    Type: List<AWS::EC2::Subnet::ID>
+    Properties: 
+      SubnetID: subnet-6e753709
     #Description : "subnet-e7abe2c9,subnet-2ff7e565"
   VpcId:
-      Type: "AWS::EC2::VPC::vpc-77e6780d"
-      Properties: "subnet-e7abe2c9,subnet-2ff7e565"
+      Type: AWS::EC2::VPC::ID
+      Properties: 
+        VpcID: vpc-77e6780d
      # Description : "vpc-77e6780d"
 
 Resources:
