@@ -133,7 +133,6 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: feedsInvokePermission
     Properties:
-      NAME: feeds-TargetGroup
       TargetType: lambda
       Targets:
       - Id: !GetAtt feeds.Arn
@@ -141,7 +140,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: usersInvokePermission
     Properties:
-      NAME: users-TargetGroup
+     # NAME: users-TargetGroup
       TargetType: lambda
       Targets:
       - Id: !GetAtt users.Arn
@@ -149,7 +148,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: categoryInvokePermission
     Properties:
-      NAME: category-TargetGroup
+     # NAME: category-TargetGroup
       TargetType: lambda
       Targets:
       - Id: !GetAtt category.Arn            
